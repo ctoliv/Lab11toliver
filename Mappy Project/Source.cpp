@@ -17,6 +17,7 @@ int main(void)
 	//variables
 	bool done = false;
 	bool render = false;
+	bool levelComplete = false;
 	//Player Variable
 	Sprite player;
 	const int JUMPIT=1600;
@@ -47,7 +48,7 @@ int main(void)
 
 	int xOff = 0;
 	int yOff = 0;
-	if(MapLoad("sample.fmp", 1))
+	if(MapLoad("lab11.fmp", 1))
 		return -5;
 
 	event_queue = al_create_event_queue();
@@ -83,7 +84,12 @@ int main(void)
 			else
 				player.UpdateSprites(WIDTH,HEIGHT,2);
 			if (player.CollisionEndBlock())
-				cout<<"Hit an End Block\n";
+			{
+				// End the level when the player touches the end point tile.
+				cout << "Level complete!" << endl;
+				levelComplete = true;
+				done = true;
+			}
 			render = true;
 
 		}
@@ -168,6 +174,11 @@ int main(void)
 			al_flip_display();
 			al_clear_to_color(al_map_rgb(0,0,0));
 		}
+	}
+	if (levelComplete)
+	{
+		// Pause briefly after completing the level.
+		al_rest(5.0);
 	}
 	MapFreeMem();
 	al_destroy_event_queue(event_queue);
