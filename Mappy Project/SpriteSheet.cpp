@@ -126,5 +126,11 @@ int Sprite::jumping(int jump, const int JUMPIT)
 			}
 		} 
 	}
+	// Stop the player from falling too far below the level.
+	if (y > 1000)
+	{
+		y = 1000;
+		jump = JUMPIT;
+	}
 	return jump;
 }
