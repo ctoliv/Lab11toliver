@@ -21,6 +21,7 @@ public:
 	int getHeight() {return frameHeight;}
 	int jumping(int jump, const int JUMPIT);
 	bool CollisionEndBlock();
+	void setJumping(bool value);
 
 private:
 	float x;
@@ -35,6 +36,7 @@ private:
 	int animationColumns;
 	int animationRows;
 	int animationDirection;
+	bool isJumping;
 
 	ALLEGRO_BITMAP *image;
 };

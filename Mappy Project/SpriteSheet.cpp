@@ -22,6 +22,7 @@ void Sprite::InitSprites(int width, int height)
 	frameHeight = 64;
 	animationColumns = 8;
 	animationDirection = 1;
+	isJumping = false;
 
 	image = al_load_bitmap("guy.bmp");
 	al_convert_mask_to_alpha(image, al_map_rgb(255,0,255));
@@ -84,14 +85,29 @@ void Sprite::DrawSprites(int xoffset, int yoffset)
 	int fx = (curFrame % animationColumns) * frameWidth;
 	int fy = (curFrame / animationColumns) * frameHeight;
 
-	if (animationDirection==1){
-		al_draw_bitmap_region(image, fx, fy, frameWidth,frameHeight, x-xoffset, y-yoffset, 0);
-	}else if (animationDirection == 0 ){
-		al_draw_bitmap_region(image, fx, fy, frameWidth,frameHeight, x-xoffset, y-yoffset, ALLEGRO_FLIP_HORIZONTAL);
-	}else if (animationDirection == 2 ){
-		al_draw_bitmap_region(image,0,0,frameWidth,frameHeight,  x-xoffset, y-yoffset, 0);
-
+	if (isJumping)
+	{
+		// Draw the jumping animation while the spacebar is pressed.
+		al_draw_bitmap_region(image, fx, fy, frameWidth, frameHeight, x - xoffset, y - yoffset, 0);
 	}
+	else if (animationDirection == 1)
+	{
+		al_draw_bitmap_region(image, fx, fy, frameWidth, frameHeight, x - xoffset, y - yoffset, 0);
+	}
+	else if (animationDirection == 0)
+	{
+		al_draw_bitmap_region(image, fx, fy, frameWidth, frameHeight, x - xoffset, y - yoffset, ALLEGRO_FLIP_HORIZONTAL);
+	}
+	else if (animationDirection == 2)
+	{
+		al_draw_bitmap_region(image, 0, 0, frameWidth, frameHeight, x - xoffset, y - yoffset, 0);
+	}
+}
+
+void Sprite::setJumping(bool value)
+{
+	// Store whether the player is currently jumping.
+	isJumping = value;
 }
 
 int Sprite::jumping(int jump, const int JUMPIT)
@@ -105,7 +121,20 @@ int Sprite::jumping(int jump, const int JUMPIT)
 	{
 		y -= jump / 3;
 		jump--;
-		curFrame = 0;
+		if (isJumping)
+		{
+			// Animate the jumping sequence only while spacebar is being pressed.
+			if (++frameCount > frameDelay)
+			{
+				frameCount = 0;
+				if (++curFrame > maxFrame)
+					curFrame = 1;
+			}
+		}
+		else
+		{
+			curFrame = 0;
+		}
 
 		// Stop the player from jumping above the top of the map.
 		if (y < 0)

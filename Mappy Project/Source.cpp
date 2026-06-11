@@ -129,6 +129,8 @@ int main(void)
 			case ALLEGRO_KEY_SPACE:
 				keys[SPACE] = true;
 				jump=30;
+				player.setJumping(true);
+				break;
 
 			}
 		}
@@ -153,6 +155,7 @@ int main(void)
 				break;
 			case ALLEGRO_KEY_SPACE:
 				keys[SPACE] = false;
+				player.setJumping(false);
 				break;
 			}
 		}
