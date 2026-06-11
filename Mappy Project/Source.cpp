@@ -1,6 +1,7 @@
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_primitives.h>
+#include <allegro5/allegro_font.h>
 #include "SpriteSheet.h"
 #include "mappy_A5.h"
 #include <iostream>
@@ -18,6 +19,8 @@ int main(void)
 	bool done = false;
 	bool render = false;
 	bool levelComplete = false;
+	double startTime = 0;
+	double finalTime = 0;
 	//Player Variable
 	Sprite player;
 	const int JUMPIT=1600;
@@ -29,6 +32,7 @@ int main(void)
 	ALLEGRO_DISPLAY *display = NULL;
 	ALLEGRO_EVENT_QUEUE *event_queue = NULL;
 	ALLEGRO_TIMER *timer;
+	ALLEGRO_FONT* font = NULL;
 
 	//program init
 	if(!al_init())										//initialize Allegro
@@ -43,6 +47,7 @@ int main(void)
 	al_install_keyboard();
 	al_init_image_addon();
 	al_init_primitives_addon();
+	al_init_font_addon();
 
 	player.InitSprites(WIDTH,HEIGHT);
 
@@ -54,10 +59,13 @@ int main(void)
 	event_queue = al_create_event_queue();
 	timer = al_create_timer(1.0 / 60);
 
+	font = al_create_builtin_font();
+
 	al_register_event_source(event_queue, al_get_timer_event_source(timer));
 	al_register_event_source(event_queue, al_get_keyboard_event_source());
 
 	al_start_timer(timer);
+	startTime = al_get_time();
 	//draw the background tiles
 	MapDrawBG(xOff,yOff, 0, 0, WIDTH-1, HEIGHT-1);
 
@@ -86,6 +94,8 @@ int main(void)
 			if (player.CollisionEndBlock())
 			{
 				// End the level when the player touches the end point tile.
+				finalTime = al_get_time() - startTime;
+
 				cout << "Level complete!" << endl;
 				levelComplete = true;
 				done = true;
@@ -177,10 +187,24 @@ int main(void)
 	}
 	if (levelComplete)
 	{
-		// Pause briefly after completing the level.
+		// Display the level completion message and time.
+		al_clear_to_color(al_map_rgb(0, 0, 0));
+
+		al_draw_textf(
+			font,
+			al_map_rgb(255, 255, 255),
+			WIDTH / 2,
+			HEIGHT / 2,
+			ALLEGRO_ALIGN_CENTER,
+			"Level completed in %.2f seconds",
+			finalTime
+		);
+
+		al_flip_display();
 		al_rest(5.0);
 	}
 	MapFreeMem();
+	al_destroy_font(font);
 	al_destroy_event_queue(event_queue);
 	al_destroy_display(display);						//destroy our display object
 
