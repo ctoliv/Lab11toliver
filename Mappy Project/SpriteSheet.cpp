@@ -103,9 +103,16 @@ int Sprite::jumping(int jump, const int JUMPIT)
 	}
 	else
 	{
-		y -= jump/3; 
-		jump--; 
-		curFrame=0;
+		y -= jump / 3;
+		jump--;
+		curFrame = 0;
+
+		// Stop the player from jumping above the top of the map.
+		if (y < 0)
+		{
+			y = 0;
+			jump = 0;
+		}
 	}
 
 	if (jump<0) 
