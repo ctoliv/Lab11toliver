@@ -4,6 +4,7 @@
 #include <allegro5/allegro_ttf.h>
 #include <iostream>
 using namespace std;
+int headCollided(int x, int y);
 class Sprite
 {
 	friend int collided(int x, int y);

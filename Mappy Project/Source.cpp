@@ -9,6 +9,7 @@ using namespace std;
 
 int collided(int x, int y);  //Tile Collision
 bool endValue( int x, int y ); //End Block with the User Value = 8
+int headCollided(int x, int y);
 int main(void)
 {
 	const int WIDTH = 900;
@@ -80,6 +81,8 @@ int main(void)
 		al_wait_for_event(event_queue, &ev);
 		if(ev.type == ALLEGRO_EVENT_TIMER)
 		{
+			MapUpdateAnims();
+
 			render = true;
 			if(keys[UP])
 				;
@@ -214,6 +217,15 @@ int main(void)
 	return 0;
 }
 
+int headCollided(int x, int y)
+{
+	BLKSTR* blockdata;
+	blockdata = MapGetBlock(x / mapblockwidth, y / mapblockheight);
+
+	// For head collision, check the bottom of the tile.
+	// This lets the player jump through platforms that only have top collision.
+	return blockdata->bl || blockdata->br;
+}
 
 
 int collided(int x, int y)

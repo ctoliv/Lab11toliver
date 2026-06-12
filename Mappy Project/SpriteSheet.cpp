@@ -11,7 +11,7 @@ Sprite::~Sprite()
 void Sprite::InitSprites(int width, int height)
 {
 	x = 80;
-	y = -10;
+	y = 340;
 
 
 	maxFrame = 8;
@@ -120,6 +120,13 @@ int Sprite::jumping(int jump, const int JUMPIT)
 	else
 	{
 		y -= jump / 3;
+
+		if (headCollided(x + frameWidth / 2, y))
+		{
+			y += jump / 3;
+			jump = 0;
+		}
+
 		jump--;
 		if (isJumping)
 		{
